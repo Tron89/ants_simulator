@@ -1,31 +1,26 @@
 import random
+from vector import Vector
+import random
+import parameters
 
 class Ant:
-    def __init__(self, x, y):
-        self.x = x 
-        self.y = y 
-        # Otras inicializaciones necesarias
+    def __init__(self, x, y, angle, speed):
+        self.transform = Vector(x, y, angle, speed)
 
-    def move(self):
-        # Implementar la lógica de movimiento de la hormiga
+    def update(self, colision):
+        self.transform.add_rotation(random.randint(-10,10))
+        if colision == True:
+            self.transform.add_rotation(180)
+        self.transform.move()
 
-        pass
+        if self.transform.x >= parameters.width:
+            self.transform.x = 0
 
-    def position(self):
-        return self.x * 20 + 10, self.y * 20 + 10
-    
-    def moveUp(self):
-        self.y -= 1    
-        pass
+        if self.transform.x <= 0:
+            self.transform.x = parameters.width
 
-    def moveDown(self):
-        self.y += 1
-        pass
-    
-    def moveLeft(self):
-        self.x -= 1
-        pass
+        if self.transform.y >= parameters.height:
+            self.transform.y = 0
 
-    def moveRight(self):
-        self.x += 1
-        pass
+        if self.transform.y <= 0:
+            self.transform.y = parameters.height

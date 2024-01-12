@@ -1,42 +1,41 @@
 import pygame
 from environment import Environment
 from ant import Ant
+import sys
+import parameters
+
+# I don't put the DeltaTime because I don't want c:
 
 pygame.init()
 
-# Configuración de la pantalla
-width, height = 800, 600
+width, height = parameters.width, parameters.height
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Simulador de Hormigas")
+clock = pygame.time.Clock()
 
-# Inicializar el entorno y las hormigas
-environment = Environment(width, height)
-ant1 = Ant(5, 0) # Crear una hormiga de ejemplo
+environment = Environment()
 
-running = True
-while running:
+clock.tick(30)
+
+while True:
+
+    frame_rate = str(int(clock.get_fps()))
+    pygame.display.set_caption(parameters.caption + " FPS - " + frame_rate)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            sys.exit()
 
-    # Limpiar la pantalla y dibujar el entorno y las hormigas
-    screen.fill((255, 255, 255))  # Fondo blanco
-
-    # Dibujar la cuadrícula
-    cell_size = 20
-    for x in range(0, width, cell_size):
-        pygame.draw.line(screen, (200, 200, 200), (x, 0), (x, height))
-    for y in range(0, height, cell_size):
-        pygame.draw.line(screen, (200, 200, 200), (0, y), (width, y))
-
-    ant1.moveRight()
-
-    # Actualizar el entorno y las hormigas
+    # --- LOGIC
     environment.update()
-    pygame.draw.circle(screen, (0, 0, 0), (ant1.position()), 10)  # (255, 0, 0) es el color rojo, 10 es el radio
+    # --- LOGIC
+    screen.fill((255, 255, 255))
+    # --- SCREEN
+    environment.screen(screen)
 
-    # Dibujar el entorno y las hormigas
+    
+    # --- SCREEN
 
     pygame.display.flip()
+    clock.tick()
 
 pygame.quit()
