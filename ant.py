@@ -7,12 +7,11 @@ class Ant:
     def __init__(self, x, y, angle, speed):
         self.transform = Vector(x, y, angle, speed)
 
-    def update(self, colision):
+    def update(self):
         self.transform.add_rotation(random.randint(-10,10))
-        if colision == True:
-            self.transform.add_rotation(180)
         self.transform.move()
 
+        # to make it not desappear out the windows
         if self.transform.x >= parameters.width:
             self.transform.x = 0
 
@@ -24,3 +23,7 @@ class Ant:
 
         if self.transform.y <= 0:
             self.transform.y = parameters.height
+
+    def colision():
+        # code if there is a colision
+        pass

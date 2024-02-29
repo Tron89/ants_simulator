@@ -1,6 +1,6 @@
 # it's time to use my new adquired of trigonometry
 
-# rotation in radians, but the inputs in grades
+# rotation in radians, but the inputs in grades because I'm stoned
 
 from math import atan2, sin, cos, radians
 
@@ -21,8 +21,11 @@ class Vector:
     def add_rotation(self, angle):
         self.angle += radians(angle)
 
-    def subtract(x, y):
-        return(x.transform.x - y.transform.x, x.transform.y - y.transform.y)
+    def subtract(a, b):
+        return(a.transform.x - b.transform.x, a.transform.y - b.transform.y)
+    
+    def add(a, b):
+        return(a.transform.x + b.transform.x, a.transform.y + b.transform.y)
 
 
 

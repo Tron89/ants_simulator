@@ -26,12 +26,16 @@ while True:
             sys.exit()
 
     # --- LOGIC
-    environment.update()
+            
+    environment.update_logic()
+    
     # --- LOGIC
-    screen.fill((255, 255, 255))
-    # --- SCREEN
-    environment.screen(screen)
 
+    screen.fill((255, 255, 255))
+    
+    # --- SCREEN
+    
+    environment.update_screen(screen)
     
     # --- SCREEN
 
