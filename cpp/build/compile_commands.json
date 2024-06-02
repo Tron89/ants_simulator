@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/claudiu/workspace/SFML_test/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/mi_ejecutable.dir/main.cpp.o -c /home/claudiu/workspace/SFML_test/main.cpp",
+  "file": "/home/claudiu/workspace/SFML_test/main.cpp",
+  "output": "CMakeFiles/mi_ejecutable.dir/main.cpp.o"
+}
+]

@@ -1,5 +1,7 @@
 # ants_simulator
 
+I have to reorder ALL, the code, the files, and the README.md
+
 ## OBJECTIVE
 Is a simulator of ants :D
 
@@ -38,7 +40,9 @@ This is my plan, I don't know how far I will go, but for when I'm bored:
 
 
 ## SPECIFICATIONS
-I will use python with the pygame library to do the enviroment, using a grid or something
+~~I will use python with the pygame library to do the enviroment, using a grid or something~~
+
+Nel, all this is going to be with c++ because is powerful >:D
 
 ## ANTS DATA
 
