@@ -11,6 +11,8 @@ pygame.init()
 width, height = parameters.width, parameters.height
 screen = pygame.display.set_mode((width, height))
 clock = pygame.time.Clock()
+dt = 0
+frame_rate = 1
 
 environment = Environment()
 
@@ -18,8 +20,9 @@ clock.tick(30)
 
 while True:
 
-    frame_rate = str(int(clock.get_fps()))
-    pygame.display.set_caption(parameters.caption + " FPS - " + frame_rate)
+    frame_rate = int(clock.get_fps())
+    
+    pygame.display.set_caption(parameters.caption + " FPS - " + str(frame_rate))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -27,7 +30,7 @@ while True:
 
     # --- LOGIC
             
-    environment.update_logic()
+    environment.update_logic(dt)
     
     # --- LOGIC
 
@@ -41,5 +44,8 @@ while True:
 
     pygame.display.flip()
     clock.tick()
+    
+    if frame_rate != 0:
+        dt = 60/frame_rate
 
 pygame.quit()

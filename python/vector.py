@@ -11,12 +11,12 @@ class Vector:
         self.angle = radians(angle)
         self.speed = speed
     
-    def move(self):
+    def move(self, dt):
         movementx = self.speed * cos(self.angle)
         movementy = self.speed * sin(self.angle)
         
-        self.x += movementx
-        self.y += movementy
+        self.x += movementx * dt
+        self.y += movementy * dt
 
     def add_rotation(self, angle):
         self.angle += radians(angle)
