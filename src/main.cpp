@@ -1,7 +1,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "Colony.hpp"
+#include "Environment.hpp"
+#include "config.hpp"
 
 int main()
 {
@@ -9,27 +10,24 @@ int main()
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
 
-    sf::RenderWindow window(sf::VideoMode(1500, 1000), "SFML works!", sf::Style::Default, settings);
-
-    window.setTitle("Ants");
+    sf::RenderWindow window(sf::VideoMode(config::screenX, config::screenY), config::title, sf::Style::Default, settings);
 
     /* OBJECTS CREATION */
 
     // 400 ants max for 60 fps
-    Colony colony(400);
+    Environment Environment(config::antsNumber);
 
     /* VIEWS */
     sf::View view(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), sf::Vector2f(window.getSize()));
 
     /* DECLARATIONS */
-    int speed = 5;
-    float fps = 0;
+    float fps;
     std::vector<float> fpsAvargeV;
     float fpsAvarge;
 
     /* NORMAL LOOP */
     sf::Clock clock;
-    float dt = 0;
+    float dt;
 
     while (window.isOpen())
     {
@@ -66,37 +64,38 @@ int main()
         // view movement
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
         {
-            view.move(-10.f * speed * dt, 0.f);
+            view.move(-config::cameraSpeed * dt, 0.f);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
         {
-            view.move(10.f * speed * dt, 0.f);
+            view.move(config::cameraSpeed * dt, 0.f);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
         {
-            view.move(0.f, -10.f * speed * dt);
+            view.move(0.f, -config::cameraSpeed * dt);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         {
-            view.move(0.f, 10.f * speed * dt);
+            view.move(0.f, config::cameraSpeed * dt);
         }
 
-        colony.update(dt);
+        Environment.update(dt);
 
         /* VIEW THINGS */
         window.clear();
         window.setView(view);
+
         // DRAW HEARE
-        colony.draw(window);
+        Environment.draw(window);
 
         // END DRAW
         window.display();
 
         /* EXTRA THINGS */
-        // FPS
+        // FPS and DeltaTime
         float currentTime = clock.restart().asSeconds();
         fps = 1.f / currentTime;
-        dt = currentTime;
+        dt = currentTime * config::timeSpeed;
 
         fpsAvargeV.push_back(fps);
 
@@ -114,9 +113,16 @@ int main()
         }
 
         // OUTPUT
-        std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                  << std::endl;
-        std::cout << fpsAvarge << std::endl;
+        if (config::passConsole)
+        {
+            std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                      << std::endl;
+        }
+
+        if (config::seeFPS)
+        {
+            std::cout << fpsAvarge << std::endl;
+        }
     }
 
     return 0;

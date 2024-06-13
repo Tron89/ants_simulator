@@ -2,16 +2,16 @@
 Is a simulator of ants :D
 
 ## TASKS
-I have to reorder ALL, the code, the files, and the README.md
+
 
 ## OBJECTIVES
 This is my plan, I don't know how far I will go, but for when I'm bored:
 
-1. First Step
-   - Create the environment
-   - Create the ants
-   - Implement an default basic erratic movement for the ants
-   - Basic collision detection
+1. ~~First Step~~
+   - ~~Create the environment~~
+   - ~~Create the ants~~
+   - ~~Implement an default basic erratic movement for the ants~~
+   - ~~Basic collision detection~~
 2. Second Step
    - Create basics objects and food
    - External nest (the entrance, without tunels)
