@@ -13,9 +13,9 @@ This is my plan, I don't know how far I will go, but for when I'm bored:
    - ~~Implement an default basic erratic movement for the ants~~
    - ~~Basic collision detection~~
 2. Second Step
-   - Create basics objects and food
-   - External nest (the entrance, without tunels)
-   - Interactive Visualization
+   - ~~Create basics objects and food~~
+   - ~~External nest (the entrance, without tunels)~~
+   - ~~Interactive Visualization~~
    - Communication through pheromones
    - Route optimization (through pheromones)
    - Food detection and return to nest

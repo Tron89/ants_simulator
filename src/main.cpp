@@ -29,6 +29,7 @@ int main()
     sf::Clock clock;
     float dt;
 
+
     while (window.isOpen())
     {
 
@@ -79,7 +80,7 @@ int main()
             view.move(0.f, config::cameraSpeed * dt);
         }
 
-        Environment.update(dt);
+        Environment.update(dt, window);
 
         /* VIEW THINGS */
         window.clear();
