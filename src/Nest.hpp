@@ -20,14 +20,14 @@ class Nest : public sf::CircleShape
 
     }
 
-    void onCollisionEnter(Ant &collision)
-    {
-        if (collision.hasFood){
-            collision.hasFood = false;
-            foodCount ++;
-            collision.setFillColor(sf::Color(255, 255, 255));
-        }
-    }
+    // void onCollisionEnter(Ant &collision)
+    // {
+    //     if (collision.hasFood){
+    //         collision.hasFood = false;
+    //         foodCount ++;
+    //         collision.setFillColor(sf::Color(255, 255, 255));
+    //     }
+    // }
     private:
 };
 

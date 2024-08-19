@@ -4,7 +4,6 @@
 #ifndef FOOD_HPP
 #define FOOD_HPP
 
-#include "Ant.hpp"
 
 class Food : public sf::CircleShape
 {
@@ -20,10 +19,10 @@ class Food : public sf::CircleShape
 
     }
 
-    void onCollisionEnter(Ant &collision)
-    {
+    // void onCollisionEnter(Ant &collision)
+    // {
 
-    }
+    // }
     private:
 };
 

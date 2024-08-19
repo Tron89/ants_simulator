@@ -34,15 +34,15 @@ public:
         ants.reserve(numberOfAnts);
         for (size_t i = 0; i < numberOfAnts; ++i)
         {
-            Ant ant(distribution(generator), distribution(generator)); // Example radius
+            Ant ant(pheromones, distribution(generator), distribution(generator)); // Example radius
             ants.push_back(ant);
         }
 
-        Food food1(500, 500, 50);
-        foods.push_back(food1);
+        // Food food1(500, 500, 50);
+        // foods.push_back(food1);
 
-        Nest nest1(100, 50, 10);
-        nests.push_back(nest1);
+        // Nest nest1(100, 50, 10);
+        // nests.push_back(nest1);
     }
 
     void update(float dt, sf::RenderWindow &window)
@@ -56,7 +56,7 @@ public:
 
             if (thingToSpawn == "ant")
             {
-                Ant ant(worldPos.x, worldPos.y);
+                Ant ant(pheromones, worldPos.x, worldPos.y);
                 ants.push_back(ant);
             }
             else if (thingToSpawn == "rock")
@@ -135,21 +135,27 @@ public:
 
             // colision detection
 
+            std::vector<Food> antFoods;
             for (auto &food : foods)
             {
-                if (food.getPosition() != ant.getPosition())
-                {
-                    sf::Vector2f pos1 = ant.getPosition();
-                    sf::Vector2f pos2 = food.getPosition();
-                    float distance = std::sqrt(std::pow(pos1.x - pos2.x, 2) + std::pow(pos1.y - pos2.y, 2));
 
-                    if (distance < (ant.getRadius() + food.getRadius()))
-                    {
-                        ant.onCollisionEnter(food);
-                        food.onCollisionEnter(ant);
-                    }
+                sf::Vector2f pos1 = ant.getPosition();
+                sf::Vector2f pos2 = food.getPosition();
+
+                float distance = std::sqrt(std::pow(pos1.x - pos2.x, 2) + std::pow(pos1.y - pos2.y, 2));
+                if (distance <= config::antDetection && !ant.hasFood)
+                {
+                    antFoods.push_back(food);   
+                }
+
+                if (food.getPosition() != ant.getPosition() && distance < (ant.getRadius() + food.getRadius()))
+                {
+                    ant.onCollisionEnter(food);
+                    // food.onCollisionEnter(ant);
                 }
             }
+            ant.GetVFood(antFoods);
+
 
             for (auto &rock : rocks)
             {
@@ -172,36 +178,43 @@ public:
                     ant.onCollisionEnter(rock);
                 }
             }
+            std::vector<Nest> antNests;
             for (auto &nest : nests)
             {
-                if (nest.getPosition() != ant.getPosition())
-                {
-                    sf::Vector2f pos1 = ant.getPosition();
-                    sf::Vector2f pos2 = nest.getPosition();
-                    float distance = std::sqrt(std::pow(pos1.x - pos2.x, 2) + std::pow(pos1.y - pos2.y, 2));
+                sf::Vector2f pos1 = ant.getPosition();
+                sf::Vector2f pos2 = nest.getPosition();
+                float distance = std::sqrt(std::pow(pos1.x - pos2.x, 2) + std::pow(pos1.y - pos2.y, 2));
 
-                    if (distance < (ant.getRadius() + nest.getRadius()))
-                    {
-                        ant.onCollisionEnter(nest);
-                        nest.onCollisionEnter(ant);
-                    }
+                if (distance <= config::antDetection && ant.hasFood)
+                {
+                    antNests.push_back(nest);   
+                }
+
+                if (distance < (ant.getRadius() + nest.getRadius()))
+                {
+                    ant.onCollisionEnter(nest);
+                    // nest.onCollisionEnter(ant);
                 }
             }
+            ant.GetVNests(antNests);
+
+
             float angle = 0;
             float minDistance = config::antDetection;
-            for (auto pheromone : pheromones)
+            
+            std::vector<Pheromone> antPheromones;
+
+            for (auto &pheromone : pheromones)
             {
                 sf::Vector2f pos1 = ant.getPosition();
                 sf::Vector2f pos2 = pheromone.getPosition();
-
-                std::vector<Pheromone> pheromones;
 
                 float distance = std::sqrt(std::pow(pos1.x - pos2.x, 2) + std::pow(pos1.y - pos2.y, 2));
                 if (distance <= config::antDetection)
                 {
                     if (ant.hasFood && pheromone.type == "searching")
                     {
-                        pheromones.push_back(pheromone);
+                        antPheromones.push_back(pheromone);
                         // sf::Vector2f vectorToPheromone = pos2 - pos1;
                         // float radiansAngle = atan2(vectorToPheromone.y, vectorToPheromone.x);
                         // if (distance < minDistance)
@@ -212,7 +225,7 @@ public:
                     }
                     else if (!ant.hasFood && pheromone.type == "finded")
                     {
-                        pheromones.push_back(pheromone);
+                        antPheromones.push_back(pheromone);
                         // sf::Vector2f vectorToPheromone = pos2 - pos1;
                         // sf::Vector2f NormalizedVectorToPheromone = normalize(vectorToPheromone);
                         // float dotProduct = ant.vMovment.x * NormalizedVectorToPheromone.x + ant.vMovment.y * NormalizedVectorToPheromone.y;
@@ -226,8 +239,9 @@ public:
                     }
 
                 }
-                ant.GetVDesired(pheromones);
             }
+            ant.GetVPheromones(antPheromones);
+
             // std::cout << angle << std::endl;
             // if (angle != 0)
             // {
