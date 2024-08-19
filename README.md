@@ -16,9 +16,9 @@ This is my plan, I don't know how far I will go, but for when I'm bored:
    - ~~Create basics objects and food~~
    - ~~External nest (the entrance, without tunels)~~
    - ~~Interactive Visualization~~
-   - Communication through pheromones
+   - ~~Communication through pheromones~~
    - Route optimization (through pheromones)
-   - Food detection and return to nest
+   - ~~Food detection and return to nest~~
 3. Third Step
    - Limited resources
    - Life and death
