@@ -1,34 +1,41 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-#ifndef CONFIG_HPP
-#define CONFIG_HPP
+#pragma once
 
 namespace config
 {
 std::string title = "Ants!";
-int screenX = 550;
-int screenY = 550;
-int antsNumber = 0;
+int screenX = 1000;
+int screenY = 1000;
+// 400 ants max for 60 fps (with a bad colision detection)
+// 10000 ants max for 60 fps with a non finished chunk-based colision detection
+int antsNumber = 10000;
 int cameraSpeed = 100;
 
 // maybe this can break the world, but meeee
 float timeSpeed = 1.f;
+float dt;
 
 bool passConsole = false;
-bool seeFPS = false;
+bool seeFPS = true;
 bool seeSpawn = false;
+int fpsLimit = 0;
 
+// Chunks
+float chunkSize = 20.f;
+sf::Color chunkOutlineColor(194, 197, 204, 50);
 
 // ant
+int antCreationNumber = 10;
 float antRadius = 1.f;
 float antSpeed = 40.f;
 float antRotation = 90.f;
 float antDetection = 100.f;
 
 float movmentWeight = 1.f;
-float pheromonesWeight = 5.f;
-float rotationWeight = 2.5f;
+float pheromonesWeight = 1.f;
+float rotationWeight = 1.f;
 float foodWeight = 100.f;
 float nestsWeight = 100.f;
 
@@ -49,7 +56,5 @@ sf::Color nestColor(100, 255, 100);
 
 //pheromones
 float pheromoneRadius = 1.f;
-float pheromoneTimeToDisappear = 20.f;
+float pheromoneTimeToDisappear = 30.f;
 }
-
-#endif // CONFIG_HPP

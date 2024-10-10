@@ -6,16 +6,20 @@
 
 int main()
 {
+
     /* GENERAL CONFIGURATION */
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
 
     sf::RenderWindow window(sf::VideoMode(config::screenX, config::screenY), config::title, sf::Style::Default, settings);
 
-    /* OBJECTS CREATION */
+    if(config::fpsLimit != 0){
+        window.setFramerateLimit(config::fpsLimit);
+    }
 
-    // 400 ants max for 60 fps
-    Environment Environment(config::antsNumber);
+    /* OBJECTS CREATION */
+    Environment Environment;
+
 
     /* VIEWS */
     sf::View view(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), sf::Vector2f(window.getSize()));
@@ -27,8 +31,6 @@ int main()
 
     /* NORMAL LOOP */
     sf::Clock clock;
-    float dt;
-
 
     while (window.isOpen())
     {
@@ -59,28 +61,34 @@ int main()
                     view.zoom(0.75f);
                 }
             }
+            if (event.type == sf::Event::KeyPressed){
+                if (event.key.code == sf::Keyboard::Escape){
+                    window.close();
+                }
+            }
+
         }
 
         /* LOGIC UPDATES */
         // view movement
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
         {
-            view.move(-config::cameraSpeed * dt, 0.f);
+            view.move(-config::cameraSpeed * config::dt, 0.f);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
         {
-            view.move(config::cameraSpeed * dt, 0.f);
+            view.move(config::cameraSpeed * config::dt, 0.f);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
         {
-            view.move(0.f, -config::cameraSpeed * dt);
+            view.move(0.f, -config::cameraSpeed * config::dt);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         {
-            view.move(0.f, config::cameraSpeed * dt);
+            view.move(0.f, config::cameraSpeed * config::dt);
         }
 
-        Environment.update(dt, window);
+        Environment.update(window);
 
         /* VIEW THINGS */
         window.clear();
@@ -96,7 +104,7 @@ int main()
         // FPS and DeltaTime
         float currentTime = clock.restart().asSeconds();
         fps = 1.f / currentTime;
-        dt = currentTime * config::timeSpeed;
+        config::dt = currentTime * config::timeSpeed;
 
         fpsAvargeV.push_back(fps);
 

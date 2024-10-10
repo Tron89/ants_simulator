@@ -1,8 +1,6 @@
+#pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
-
-#ifndef PHEROMONE_HPP
-#define PHEROMONE_HPP
 
 
 class Pheromone : public sf::CircleShape
@@ -39,7 +37,7 @@ class Pheromone : public sf::CircleShape
         // Comparar todos los atributos relevantes
         return (this->getPosition() == other.getPosition());
     }
-    void update(float dt)
+    void update()
     {
         power = ((timeToDisappear.asSeconds() - clock.getElapsedTime().asSeconds()) / timeToDisappear.asSeconds()) * startingPower;
         this->setRadius(radius * power);
@@ -55,6 +53,4 @@ class Pheromone : public sf::CircleShape
     // }
     private:
 };
-
-#endif // PHEROMONE_HPP
 

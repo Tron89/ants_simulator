@@ -1,9 +1,9 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-#ifndef FOOD_HPP
-#define FOOD_HPP
+#pragma once
 
+#include "ant/Ant.hpp"
 
 class Food : public sf::CircleShape
 {
@@ -19,12 +19,11 @@ class Food : public sf::CircleShape
 
     }
 
-    // void onCollisionEnter(Ant &collision)
-    // {
+    void onCollisionEnter(Ant &collision)
+    {
 
-    // }
+    }
     private:
 };
 
-#endif // FOOD_HPP
 

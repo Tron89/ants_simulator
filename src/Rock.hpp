@@ -1,12 +1,10 @@
+#pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
 
-#ifndef ROCK_HPP
-#define ROCK_HPP
-
-#include "Ant.hpp"
 #include "config.hpp"
+#include "ant/Ant.hpp"
 
 class Rock : public sf::RectangleShape
 {
@@ -30,5 +28,4 @@ class Rock : public sf::RectangleShape
     private:
 };
 
-#endif // ROCK_HPP
 
