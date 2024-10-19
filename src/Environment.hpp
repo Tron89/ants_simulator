@@ -6,12 +6,15 @@
 #include "ant/Ant.hpp"
 #include "ant/ant_collider.hpp"
 #include "ant/ant_updater.hpp"
+#include "collisions.hpp"
 
 #include "Rock.hpp"
 #include "Food.hpp"
 #include "Nest.hpp"
 #include "Pheromone.hpp"
 #include "Chunk.hpp"
+
+#pragma once
 
 template <typename Ta, typename Tb>
 void colisionDetection(Ta &objectA, Tb &objectB){
@@ -56,7 +59,9 @@ public:
             }
             chunks.push_back(line);
         }
-
+        rocks.push_back(Rock(20, 20, 10, 20));
+        rocks.push_back(Rock(30, 30, 10, 20));
+        rocks[1].rotate(72);
     }
 
     void update(sf::RenderWindow &window)
@@ -190,6 +195,37 @@ public:
         {
             pheromone.update();
         }
+
+        float speed = 25;
+        float rotationSpeed = 25;
+        // shape movement
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        {
+            rocks[0].move(-speed * config::dt, 0.f);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        {
+            rocks[0].move(speed * config::dt, 0.f);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        {
+            rocks[0].move(0.f, -speed * config::dt);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        {
+            rocks[0].move(0.f, speed * config::dt);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+        {
+            rocks[0].rotate(rotationSpeed * config::dt);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+        {
+            rocks[0].rotate(-rotationSpeed * config::dt);
+        }
+
+        Collisions::getColision(rocks[0], rocks[1]);
+
     }
 
     void draw(sf::RenderWindow &window)

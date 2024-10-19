@@ -3,10 +3,11 @@
 #include <chrono>
 #include <cmath>
 
-#pragma once
-
 #include "../config.hpp"
 #include "../math/Vectors.hpp"
+
+#pragma once
+
 class Pheromone;
 class ant_collider;
 

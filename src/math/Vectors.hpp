@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#pragma once
 namespace math
 {
     sf::Vector2f normalize(sf::Vector2f toNormalize){

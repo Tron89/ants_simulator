@@ -10,7 +10,7 @@ int screenX = 1000;
 int screenY = 1000;
 // 400 ants max for 60 fps (with a bad colision detection)
 // 10000 ants max for 60 fps with a non finished chunk-based colision detection
-int antsNumber = 10000;
+int antsNumber = 0;
 int cameraSpeed = 100;
 
 // maybe this can break the world, but meeee
@@ -18,7 +18,7 @@ float timeSpeed = 1.f;
 float dt;
 
 bool passConsole = false;
-bool seeFPS = true;
+bool seeFPS = false;
 bool seeSpawn = false;
 int fpsLimit = 0;
 
@@ -27,7 +27,7 @@ float chunkSize = 20.f;
 sf::Color chunkOutlineColor(194, 197, 204, 50);
 
 // ant
-int antCreationNumber = 10;
+int antCreationNumber = 1;
 float antRadius = 1.f;
 float antSpeed = 40.f;
 float antRotation = 90.f;
