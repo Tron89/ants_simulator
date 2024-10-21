@@ -168,7 +168,7 @@ private:
         return normals;
     }
 
-    // Apply the SAT 
+    // Apply the SAT (Separating Axis Theorem) 
     static bool SATcollision(sf::Shape &collision1, sf::Shape &collision2){
 
         // Get vertices
@@ -210,7 +210,7 @@ private:
         return true;
     }
 
-    // First AABB colision sistem
+    // First AABB (Axis-aligned bounding boxes) colision sistem
     static bool AABBcollision(sf::Shape &collision1, sf::Shape &collision2){
         
         // Get vertices
