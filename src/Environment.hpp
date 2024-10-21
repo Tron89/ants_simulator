@@ -224,7 +224,7 @@ public:
             rocks[0].rotate(-rotationSpeed * config::dt);
         }
 
-        Collisions::getColision(rocks[0], rocks[1]);
+        Collisions::getCollision(rocks[0], rocks[1]);
 
     }
 
