@@ -17,4 +17,9 @@ namespace math
         float magnitude = sqrt(pow(x, 2) + pow(y, 2));
         return magnitude;
     }
+
+    float dotProduct(sf::Vector2f a, sf::Vector2f b){
+        float r = a.x*b.x+a.y*b.y;
+        return r;
+    }
 }

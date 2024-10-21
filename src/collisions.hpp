@@ -13,65 +13,13 @@ public:
 
 static void getCollision(sf::Shape &collision1, sf::Shape &collision2){
 
-    // Get vertices
-    std::vector<sf::Vector2f> vertices1 = getVertices(collision1);
-    std::vector<sf::Vector2f> vertices2 = getVertices(collision2);
 
-    //
-    // Get the separatingAxises
-    //
-    std::vector<sf::Vector2f> sides1 = getSides(collision1, vertices1);
-    std::vector<sf::Vector2f> sides2 = getSides(collision2, vertices2);
-
-    std::vector<sf::Vector2f> normals1 = getNormals(sides1);
-    std::vector<sf::Vector2f> normals2 = getNormals(sides2);
-
-
-    // TODO: Discount the duplicated
-    std::vector<sf::Vector2f> separatingAxises1 = getSeparatingAxises(normals1);
-    std::vector<sf::Vector2f> separatingAxises2 = getSeparatingAxises(normals2);
-
-    //
-    // First AABB colision sistem
-    //
-    
-    // Get the max and min vertices from that perspective
-    std::array<int, 4> points = getMaxMinVertices(vertices1);
-    float minx1 = points[0];
-    float miny1 = points[1];
-    float maxx1 = points[2];
-    float maxy1 = points[3];
-
-    std::array<int, 4> points = getMaxMinVertices(vertices2);
-    float minx2 = points[0];
-    float miny2 = points[1];
-    float maxx2 = points[2];
-    float maxy2 = points[3];
-
-    bool collisionx = false;
-    bool collisiony = false;
-
-    if (minx1 < maxx2 && maxx1 > minx2)
-    {
-        collisionx = true;
+    if (AABBcollision(collision1, collision2)){
+        std::cout << "AABB Collision detected" << std::endl;
     }
-    if (miny1 < maxy2 && maxy1 > miny2)
-    {
-        collisiony = true;
+    if (SATcollision(collision1, collision2)){
+        std::cout << "SAT Collision detected" << std::endl;
     }
-    if (collisionx && collisiony) {std::cout << "Collision :)" << std::endl;}
-
-
-    // It works :'D (I been here for 3 hours fighting with sines and cosines, I'wanna die)
-    // Now it's nesesary that I do it with the separating axis, and for that I need to change the points to
-    // too the separating axis world, and for that is the dot product, 
-    // A = point to discover
-    // B = normalized vector of separating axis
-    // k = A*B
-    // k = relative x from the normalized vector
-    // other remember for me: I have it in geogebra
-
-
 
 }
 
@@ -95,7 +43,7 @@ private:
                 sf::Vector2f fromCenterPositionNormalized = math::normalize(fromCenterPosition);
                 float pointAngle = atan2(-fromCenterPositionNormalized.y, fromCenterPositionNormalized.x) * 180 / M_PI;
 
-                float pointAngelObjetive = pointAngle + rotation;
+                float pointAngelObjetive = pointAngle - rotation;
 
                 float magnitude = math::getMagnitude(fromCenterPosition);
                 sf::Vector2f fromCenterPointRotated(cos(pointAngelObjetive * (M_PI / 180.0)) * magnitude, -sin(pointAngelObjetive * (M_PI / 180.0)) * magnitude);
@@ -141,9 +89,10 @@ private:
             sf::Vector2f separatingAxis(-normal.y, normal.x);
             separatingAxises.push_back(normal);
         }
+        return separatingAxises;
     }
 
-    static std::array<int, 4> getMaxMinVertices(std::vector<sf::Vector2f> vertices){
+    static std::array<float, 4> getXYMaxMinVertices(std::vector<sf::Vector2f> vertices){
 
         float minx = INT64_MAX;
         float miny = INT64_MAX;
@@ -172,6 +121,133 @@ private:
         return {minx, miny, maxx, maxy};
     }
 
+    static std::array<float, 2> getMinMaxRelativeVectors(std::vector<sf::Vector2f> vertices, sf::Vector2f axis){
+
+        float min = INT64_MAX;
+        float max = INT64_MIN;
+        for(sf::Vector2f vertex : vertices){
+            float dotProduct = math::dotProduct(vertex, axis);
+            if(dotProduct > max){
+                max = dotProduct;
+            }
+            if(dotProduct < min){
+                min = dotProduct;
+            }
+        }
+        return {min, max};
+
+    }
+
+    static std::vector<sf::Vector2f> joinNormals(std::vector<sf::Vector2f> normals1, std::vector<sf::Vector2f> normals2){
+
+        // IDK why the dot product give me the value that I need, but I dont care :)
+
+        std::vector<sf::Vector2f> normals;
+        for(auto normal : normals1){
+            if(normals.size() != 0){
+                for(auto normalI : normals){
+                    if(!(normal == normalI || -normal.x == normalI.x && -normal.y == normalI.y)){
+                        normals.push_back(normal);
+                    }
+                }
+            } else{
+                normals.push_back(normal);
+            }
+        }
+        for(auto normal : normals2){
+            if(normals.size() != 0){
+                for(auto normalI : normals){
+                    if(!(normal == normalI || -normal.x == normalI.x && -normal.y == normalI.y)){
+                        normals.push_back(normal);
+                    }
+                }
+            } else{
+                normals.push_back(normal);
+            }
+        }
+        return normals;
+    }
+
+    // Apply the SAT 
+    static bool SATcollision(sf::Shape &collision1, sf::Shape &collision2){
+
+        // Get vertices
+        std::vector<sf::Vector2f> vertices1 = getVertices(collision1);
+        std::vector<sf::Vector2f> vertices2 = getVertices(collision2);
+
+        // Get the separatingAxises
+
+        std::vector<sf::Vector2f> sides1 = getSides(collision1, vertices1);
+        std::vector<sf::Vector2f> sides2 = getSides(collision2, vertices2);
+
+        config::test = sides2;
+        config::test2 = vertices2;
+
+        std::vector<sf::Vector2f> normals1 = getNormals(sides1);
+        std::vector<sf::Vector2f> normals2 = getNormals(sides2);
+
+        std::vector<sf::Vector2f> normals = joinNormals(normals1, normals2);
+
+        std::vector<sf::Vector2f> separatingAxises = getSeparatingAxises(normals);
+
+
+        for(auto separatingAxis : separatingAxises){
+
+            // Get the max and min vertices from the x axis of that perspective
+            std::array<float, 2> points1 = getMinMaxRelativeVectors(vertices1, separatingAxis);
+            float minx1 = points1[0];
+            float maxx1 = points1[1];
+
+            std::array<float, 2> points2 = getMinMaxRelativeVectors(vertices2, separatingAxis);
+            float minx2 = points2[0];
+            float maxx2 = points2[1];
+
+            if (minx1 > maxx2 || maxx1 < minx2)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // First AABB colision sistem
+    static bool AABBcollision(sf::Shape &collision1, sf::Shape &collision2){
+        
+        // Get vertices
+        std::vector<sf::Vector2f> vertices1 = getVertices(collision1);
+        std::vector<sf::Vector2f> vertices2 = getVertices(collision2);
+        
+        // Get the max and min vertices from the 2 axis
+        std::array<float, 4> points1 = getXYMaxMinVertices(vertices1);
+        float minx1 = points1[0];
+        float miny1 = points1[1];
+        float maxx1 = points1[2];
+        float maxy1 = points1[3];
+
+        std::array<float, 4> points2 = getXYMaxMinVertices(vertices2);
+        float minx2 = points2[0];
+        float miny2 = points2[1];
+        float maxx2 = points2[2];
+        float maxy2 = points2[3];
+
+        // Check if they are coliden in the 2 axis, if so, they are colliding :)
+        bool collisionx = false;
+        bool collisiony = false;
+
+        if (minx1 < maxx2 && maxx1 > minx2)
+        {
+            collisionx = true;
+        }
+        if (miny1 < maxy2 && maxy1 > miny2)
+        {
+            collisiony = true;
+        }
+        if (collisionx && collisiony) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 };
 

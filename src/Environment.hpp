@@ -272,6 +272,16 @@ public:
         {
             window.draw(pheromone);
         }
+
+        for (size_t i = 0; i < config::test.size(); i++)
+        {
+            sf::Vector2f side(1, 1);
+            sf::RectangleShape line(side);
+            line.setPosition(config::test2[i]);
+            line.setFillColor(sf::Color(255, 0, 0));
+            window.draw(line);
+        }
+        
     }
 
 private:

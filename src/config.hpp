@@ -17,10 +17,10 @@ int cameraSpeed = 100;
 float timeSpeed = 1.f;
 float dt;
 
-bool passConsole = false;
+bool passConsole = true;
 bool seeFPS = false;
 bool seeSpawn = false;
-int fpsLimit = 0;
+int fpsLimit = 10;
 
 // Chunks
 float chunkSize = 20.f;
@@ -57,4 +57,9 @@ sf::Color nestColor(100, 255, 100);
 //pheromones
 float pheromoneRadius = 1.f;
 float pheromoneTimeToDisappear = 30.f;
+
+
+std::vector<sf::Vector2f> test;
+std::vector<sf::Vector2f> test2;
+
 }
