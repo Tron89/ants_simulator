@@ -60,7 +60,7 @@ public:
             chunks.push_back(line);
         }
         rocks.push_back(Rock(20, 20, 10, 20));
-        rocks.push_back(Rock(30, 30, 10, 20));
+        ants.push_back(Ant(pheromones, 10, 10));
         rocks[1].rotate(72);
     }
 
@@ -224,7 +224,7 @@ public:
             rocks[0].rotate(-rotationSpeed * config::dt);
         }
 
-        Collisions::getCollision(rocks[0], rocks[1]);
+        Collisions::getCollision(rocks[0], ants[0]);
 
     }
 
@@ -277,9 +277,20 @@ public:
         {
             sf::Vector2f side(1, 1);
             sf::RectangleShape line(side);
+            line.setPosition(config::test[i]);
+            line.setFillColor(sf::Color(255, 0, 0));
+            window.draw(line);
+            config::test.clear();
+        }
+
+        for (size_t i = 0; i < config::test2.size(); i++)
+        {
+            sf::Vector2f side(1, 1);
+            sf::RectangleShape line(side);
             line.setPosition(config::test2[i]);
             line.setFillColor(sf::Color(255, 0, 0));
             window.draw(line);
+            config::test2.clear();
         }
         
     }

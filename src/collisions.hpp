@@ -13,10 +13,11 @@ public:
 
 static void getCollision(sf::Shape &collision1, sf::Shape &collision2){
 
-
+    /*
     if (AABBcollision(collision1, collision2)){
         std::cout << "AABB Collision detected" << std::endl;
     }
+    */
     if (SATcollision(collision1, collision2)){
         std::cout << "SAT Collision detected" << std::endl;
     }
@@ -176,19 +177,25 @@ private:
         std::vector<sf::Vector2f> vertices2 = getVertices(collision2);
 
         // Get the separatingAxises
-
         std::vector<sf::Vector2f> sides1 = getSides(collision1, vertices1);
         std::vector<sf::Vector2f> sides2 = getSides(collision2, vertices2);
 
-        config::test = sides2;
-        config::test2 = vertices2;
+        std::vector<sf::Vector2f> separatingAxises;
 
-        std::vector<sf::Vector2f> normals1 = getNormals(sides1);
-        std::vector<sf::Vector2f> normals2 = getNormals(sides2);
+        // If one is a circle, the separating axis will be the line between the centers of the two shapes
+        if(dynamic_cast<sf::CircleShape*>(&collision1) || dynamic_cast<sf::CircleShape*>(&collision2)){
+            // FIXME: this is asuming that the origin is the center
+            separatingAxises.push_back(math::normalize(collision1.getPosition() - collision2.getPosition()));
+        } else{
+            std::vector<sf::Vector2f> normals1 = getNormals(sides1);
+            std::vector<sf::Vector2f> normals2 = getNormals(sides2);
 
-        std::vector<sf::Vector2f> normals = joinNormals(normals1, normals2);
+            std::vector<sf::Vector2f> normals = joinNormals(normals1, normals2);
 
-        std::vector<sf::Vector2f> separatingAxises = getSeparatingAxises(normals);
+            separatingAxises = getSeparatingAxises(normals);
+        }
+
+
 
 
         for(auto separatingAxis : separatingAxises){
