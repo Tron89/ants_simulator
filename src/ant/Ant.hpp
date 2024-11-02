@@ -27,11 +27,11 @@ public:
     sf::Clock pheromoneClock;
     sf::Time timeToLost = sf::seconds(config::timeToLost);
     sf::Time timeToPheromone = sf::seconds(config::timeToCreatePheromone);
-    std::vector<Pheromone> &allPheromones;
+    std::vector<Pheromone*> &allPheromones;
 
     ant_collider collider();
 
-    Ant(std::vector<Pheromone>& pheromones, int posX = 0, int posY = 0, float radius = config::antRadius) : sf::CircleShape(radius), allPheromones(pheromones)
+    Ant(std::vector<Pheromone*> pheromones, int posX = 0, int posY = 0, float radius = config::antRadius) : sf::CircleShape(radius), allPheromones(pheromones)
     {
         this->setOrigin(sf::Vector2f(this->getRadius(), this->getRadius()));
         this->setPosition(posX, posY);

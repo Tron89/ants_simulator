@@ -16,6 +16,8 @@
 
 #pragma once
 
+
+/* 
 template <typename Ta, typename Tb>
 void colisionDetection(Ta &objectA, Tb &objectB){
     sf::Vector2f pos1 = objectA->getPosition();
@@ -27,6 +29,7 @@ void colisionDetection(Ta &objectA, Tb &objectB){
         AntCollider::onCollisionEnter(objectB, objectA);
     }
 }
+*/
 
 
 class Environment
@@ -37,6 +40,12 @@ public:
 
     Environment()
     {
+        // this->all.push_back(&ants);
+
+
+
+
+
         // spawn ants in random places
         std::mt19937 generator;
         auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
@@ -48,7 +57,7 @@ public:
         ants.reserve(config::antsNumber);
         for (size_t i = 0; i < config::antsNumber; ++i)
         {
-            Ant ant(pheromones, distributionX(generator), distributionY(generator)); // Example radius
+            Ant* ant = new Ant(pheromones, distributionX(generator), distributionY(generator)); // Example radius
             ants.push_back(ant);
         }
         for (size_t y = 0; y < config::screenY/config::chunkSize; ++y){
@@ -59,9 +68,8 @@ public:
             }
             chunks.push_back(line);
         }
-        rocks.push_back(Rock(20, 20, 10, 20));
-        ants.push_back(Ant(pheromones, 10, 10));
-        rocks[1].rotate(72);
+        rocks.push_back(new Rock(20, 20, 10, 20));
+        ants.push_back(new Ant(pheromones, 10, 10));
     }
 
     void update(sf::RenderWindow &window)
@@ -78,34 +86,28 @@ public:
             {
                 for (size_t i = 0; i < config::antCreationNumber; i++)
                 {
-                    Ant ant(pheromones, worldPos.x, worldPos.y);
-                    ants.push_back(ant);
+                    ants.push_back(new Ant(pheromones, worldPos.x, worldPos.y));
                 }
             }
             else if (thingToSpawn == "rock")
             {
-                Rock rock(worldPos.x, worldPos.y);
-                rocks.push_back(rock);
+                rocks.push_back(new Rock(worldPos.x, worldPos.y));
             }
             else if (thingToSpawn == "food")
             {
-                Food food(worldPos.x, worldPos.y);
-                foods.push_back(food);
+                foods.push_back(new Food(worldPos.x, worldPos.y));
             }
             else if (thingToSpawn == "nest")
             {
-                Nest nest(worldPos.x, worldPos.y);
-                nests.push_back(nest);
+                nests.push_back(new Nest(worldPos.x, worldPos.y));
             }
             else if (thingToSpawn == "searching")
             {
-                Pheromone pheromone(worldPos.x, worldPos.y, "searching");
-                pheromones.push_back(pheromone);
+                pheromones.push_back(new Pheromone(worldPos.x, worldPos.y, "searching"));
             }
             else if (thingToSpawn == "finded")
             {
-                Pheromone pheromone(worldPos.x, worldPos.y, "finded");
-                pheromones.push_back(pheromone);
+                pheromones.push_back(new Pheromone(worldPos.x, worldPos.y, "finded"));
             }
         }
         else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -158,15 +160,15 @@ public:
             // update things
             float rotate = distribution(generator);
 
-            if (0 < ant.getPosition().y/config::chunkSize && 0 < ant.getPosition().x/config::chunkSize && ant.getPosition().y/config::chunkSize < chunks.size() && ant.getPosition().x/config::chunkSize < chunks[ant.getPosition().y/config::chunkSize].size()){
-                chunks[ant.getPosition().y/config::chunkSize][ant.getPosition().x/config::chunkSize].add(ant);
+            if (0 < ant->getPosition().y/config::chunkSize && 0 < ant->getPosition().x/config::chunkSize && ant->getPosition().y/config::chunkSize < chunks.size() && ant->getPosition().x/config::chunkSize < chunks[ant->getPosition().y/config::chunkSize].size()){
+                chunks[ant->getPosition().y/config::chunkSize][ant->getPosition().x/config::chunkSize].add(ant);
             }
 
             // update ants
-            AntUpdater::update(ant, rotate);
+            AntUpdater::update(*ant, rotate);
         }
 
-
+    /*
     for (size_t y = 0; y < chunks.size(); y++)
     {
         for (size_t x = 0; x < chunks[y].size(); x++)
@@ -184,16 +186,23 @@ public:
             }
         }
     }
+    */
 
 
         pheromones.erase(std::remove_if(pheromones.begin(), pheromones.end(),
-                                        [](const Pheromone &pheromone)
-                                        { return pheromone.disappear; }),
-                         pheromones.end());
+                                [](Pheromone* pheromone)
+                                {
+                                    bool shouldErase = pheromone->disappear;
+                                    if (shouldErase) {
+                                        delete pheromone; // Libera la memoria del objeto
+                                    }
+                                    return shouldErase;
+                                }),
+                 pheromones.end());
 
         for (auto &pheromone : pheromones)
         {
-            pheromone.update();
+            pheromone->update();
         }
 
         float speed = 25;
@@ -201,30 +210,30 @@ public:
         // shape movement
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
-            rocks[0].move(-speed * config::dt, 0.f);
+            rocks[0]->move(-speed * config::dt, 0.f);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            rocks[0].move(speed * config::dt, 0.f);
+            rocks[0]->move(speed * config::dt, 0.f);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
-            rocks[0].move(0.f, -speed * config::dt);
+            rocks[0]->move(0.f, -speed * config::dt);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
-            rocks[0].move(0.f, speed * config::dt);
+            rocks[0]->move(0.f, speed * config::dt);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
         {
-            rocks[0].rotate(rotationSpeed * config::dt);
+            rocks[0]->rotate(rotationSpeed * config::dt);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
         {
-            rocks[0].rotate(-rotationSpeed * config::dt);
+            rocks[0]->rotate(-rotationSpeed * config::dt);
         }
 
-        Collisions::getCollision(rocks[0], ants[0]);
+        Collisions::getCollision(*rocks[0], *ants[0]);
 
     }
 
@@ -239,15 +248,15 @@ public:
 
         for (auto &rock : rocks)
         {
-            window.draw(rock);
+            window.draw(*rock);
         }
         for (auto &food : foods)
         {
-            window.draw(food);
+            window.draw(*food);
         }
         for (auto &ant : ants)
         {
-            window.draw(ant);
+            window.draw(*ant);
         }
         for (auto &nest : nests)
         {
@@ -259,18 +268,18 @@ public:
                 std::cout << "FONT NOT FINDED" << std::endl;
             }
             text.setFont(font);
-            text.setString(std::to_string(nest.foodCount));
+            text.setString(std::to_string(nest->foodCount));
             text.setCharacterSize(24);
-            text.setPosition(nest.getPosition().x - 10, nest.getPosition().y - 50);
+            text.setPosition(nest->getPosition().x - 10, nest->getPosition().y - 50);
 
             window.draw(text);
 
-            window.draw(nest);
+            window.draw(*nest);
         }
 
         for (auto &pheromone : pheromones)
         {
-            window.draw(pheromone);
+            window.draw(*pheromone);
         }
 
         for (size_t i = 0; i < config::test.size(); i++)
@@ -300,11 +309,12 @@ private:
     // I have to, put all in one or something (for improve collision update)
     // Change all this to pointer vectors
 
-    std::vector<Ant> ants;
-    std::vector<Rock> rocks;
-    std::vector<Food> foods;
-    std::vector<Nest> nests;
-    std::vector<Pheromone> pheromones;
+    std::vector<Ant*> ants;
+    std::vector<Rock*> rocks;
+    std::vector<Food*> foods;
+    std::vector<Nest*> nests;
+    std::vector<Pheromone*> pheromones;
+    std::vector<std::vector<sf::Shape>*> all;
     std::vector<std::vector<Chunk>> chunks;
 };
 

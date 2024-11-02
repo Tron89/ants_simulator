@@ -9,7 +9,7 @@
 class Chunk :  public sf::RectangleShape
 {
     public:
-    std::vector<Ant*> content;
+    std::vector<sf::Shape*> content;
 
     Chunk(int posx = 0, int posy = 0, float size = config::chunkSize) : sf::RectangleShape(sf::Vector2f(size, size)){
         setPosition(posx, posy);
@@ -18,11 +18,10 @@ class Chunk :  public sf::RectangleShape
         setOutlineColor(config::chunkOutlineColor);
     }
 
-    template <typename T>
-    void add(T &object){
-        content.push_back(&object);
+    void add(sf::Shape* object){
+        content.push_back(object);
     }
-    std::vector<Ant*> getContent(){
+    std::vector<Shape*> getContent(){
         return content;
     }
     void clear(){

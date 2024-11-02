@@ -47,8 +47,7 @@ struct AntUpdater{
 
             float power = (ant.timeToLost.asSeconds() - ant.clock.getElapsedTime().asSeconds()) / ant.timeToLost.asSeconds();
             if (power > 0){
-                Pheromone pheromone(ant.getPosition().x, ant.getPosition().y, type, power);
-                ant.allPheromones.push_back(pheromone);
+                ant.allPheromones.push_back(new Pheromone(ant.getPosition().x, ant.getPosition().y, type, power));
             }
         }
     }
