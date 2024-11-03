@@ -21,8 +21,98 @@ static void getCollision(sf::Shape &collision1, sf::Shape &collision2){
     if (SATcollision(collision1, collision2)){
         std::cout << "SAT Collision detected" << std::endl;
     }
-
 }
+
+
+    // Apply the SAT (Separating Axis Theorem) 
+    static bool SATcollision(sf::Shape &collision1, sf::Shape &collision2){
+
+        // Get vertices
+        std::vector<sf::Vector2f> vertices1 = getVertices(collision1);
+        std::vector<sf::Vector2f> vertices2 = getVertices(collision2);
+
+        // Get the separatingAxises
+        std::vector<sf::Vector2f> sides1 = getSides(collision1, vertices1);
+        std::vector<sf::Vector2f> sides2 = getSides(collision2, vertices2);
+
+        std::vector<sf::Vector2f> separatingAxises;
+
+        // If one is a circle, the separating axis will be the line between the centers of the two shapes
+        if(dynamic_cast<sf::CircleShape*>(&collision1) || dynamic_cast<sf::CircleShape*>(&collision2)){
+            // FIXME: this is asuming that the origin is the center
+            separatingAxises.push_back(math::normalize(collision1.getPosition() - collision2.getPosition()));
+        } else{
+            std::vector<sf::Vector2f> normals1 = getNormals(sides1);
+            std::vector<sf::Vector2f> normals2 = getNormals(sides2);
+
+            std::vector<sf::Vector2f> normals = joinNormals(normals1, normals2);
+
+            separatingAxises = getSeparatingAxises(normals);
+        }
+
+
+
+
+        for(auto separatingAxis : separatingAxises){
+
+            // Get the max and min vertices from the x axis of that perspective
+            std::array<float, 2> points1 = getMinMaxRelativeVectors(vertices1, separatingAxis);
+            float minx1 = points1[0];
+            float maxx1 = points1[1];
+
+            std::array<float, 2> points2 = getMinMaxRelativeVectors(vertices2, separatingAxis);
+            float minx2 = points2[0];
+            float maxx2 = points2[1];
+
+            if (minx1 > maxx2 || maxx1 < minx2)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // First AABB (Axis-aligned bounding boxes) colision sistem
+    static bool AABBcollision(sf::Shape &collision1, sf::Shape &collision2){
+        
+        // Get vertices
+        std::vector<sf::Vector2f> vertices1 = getVertices(collision1);
+        std::vector<sf::Vector2f> vertices2 = getVertices(collision2);
+        
+        // Get the max and min vertices from the 2 axis
+        std::array<float, 4> points1 = getXYMaxMinVertices(vertices1);
+        float minx1 = points1[0];
+        float miny1 = points1[1];
+        float maxx1 = points1[2];
+        float maxy1 = points1[3];
+
+        std::array<float, 4> points2 = getXYMaxMinVertices(vertices2);
+        float minx2 = points2[0];
+        float miny2 = points2[1];
+        float maxx2 = points2[2];
+        float maxy2 = points2[3];
+
+        // Check if they are coliden in the 2 axis, if so, they are colliding :)
+        bool collisionx = false;
+        bool collisiony = false;
+
+        if (minx1 < maxx2 && maxx1 > minx2)
+        {
+            collisionx = true;
+        }
+        if (miny1 < maxy2 && maxy1 > miny2)
+        {
+            collisiony = true;
+        }
+        if (collisionx && collisiony) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
 
 private:
 
@@ -167,93 +257,6 @@ private:
             }
         }
         return normals;
-    }
-
-    // Apply the SAT (Separating Axis Theorem) 
-    static bool SATcollision(sf::Shape &collision1, sf::Shape &collision2){
-
-        // Get vertices
-        std::vector<sf::Vector2f> vertices1 = getVertices(collision1);
-        std::vector<sf::Vector2f> vertices2 = getVertices(collision2);
-
-        // Get the separatingAxises
-        std::vector<sf::Vector2f> sides1 = getSides(collision1, vertices1);
-        std::vector<sf::Vector2f> sides2 = getSides(collision2, vertices2);
-
-        std::vector<sf::Vector2f> separatingAxises;
-
-        // If one is a circle, the separating axis will be the line between the centers of the two shapes
-        if(dynamic_cast<sf::CircleShape*>(&collision1) || dynamic_cast<sf::CircleShape*>(&collision2)){
-            // FIXME: this is asuming that the origin is the center
-            separatingAxises.push_back(math::normalize(collision1.getPosition() - collision2.getPosition()));
-        } else{
-            std::vector<sf::Vector2f> normals1 = getNormals(sides1);
-            std::vector<sf::Vector2f> normals2 = getNormals(sides2);
-
-            std::vector<sf::Vector2f> normals = joinNormals(normals1, normals2);
-
-            separatingAxises = getSeparatingAxises(normals);
-        }
-
-
-
-
-        for(auto separatingAxis : separatingAxises){
-
-            // Get the max and min vertices from the x axis of that perspective
-            std::array<float, 2> points1 = getMinMaxRelativeVectors(vertices1, separatingAxis);
-            float minx1 = points1[0];
-            float maxx1 = points1[1];
-
-            std::array<float, 2> points2 = getMinMaxRelativeVectors(vertices2, separatingAxis);
-            float minx2 = points2[0];
-            float maxx2 = points2[1];
-
-            if (minx1 > maxx2 || maxx1 < minx2)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // First AABB (Axis-aligned bounding boxes) colision sistem
-    static bool AABBcollision(sf::Shape &collision1, sf::Shape &collision2){
-        
-        // Get vertices
-        std::vector<sf::Vector2f> vertices1 = getVertices(collision1);
-        std::vector<sf::Vector2f> vertices2 = getVertices(collision2);
-        
-        // Get the max and min vertices from the 2 axis
-        std::array<float, 4> points1 = getXYMaxMinVertices(vertices1);
-        float minx1 = points1[0];
-        float miny1 = points1[1];
-        float maxx1 = points1[2];
-        float maxy1 = points1[3];
-
-        std::array<float, 4> points2 = getXYMaxMinVertices(vertices2);
-        float minx2 = points2[0];
-        float miny2 = points2[1];
-        float maxx2 = points2[2];
-        float maxy2 = points2[3];
-
-        // Check if they are coliden in the 2 axis, if so, they are colliding :)
-        bool collisionx = false;
-        bool collisiony = false;
-
-        if (minx1 < maxx2 && maxx1 > minx2)
-        {
-            collisionx = true;
-        }
-        if (miny1 < maxy2 && maxy1 > miny2)
-        {
-            collisiony = true;
-        }
-        if (collisionx && collisiony) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
 };

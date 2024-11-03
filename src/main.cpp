@@ -1,8 +1,10 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <vector>
+
 #include "Environment.hpp"
 #include "config.hpp"
+#include "Input.hpp"
 
 int main()
 {
@@ -18,7 +20,7 @@ int main()
     }
 
     /* OBJECTS CREATION */
-    Environment Environment;
+    Environment environment;
 
 
     /* VIEWS */
@@ -70,32 +72,18 @@ int main()
         }
 
         /* LOGIC UPDATES */
-        // view movement
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        {
-            view.move(-config::cameraSpeed * config::dt, 0.f);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        {
-            view.move(config::cameraSpeed * config::dt, 0.f);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-        {
-            view.move(0.f, -config::cameraSpeed * config::dt);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        {
-            view.move(0.f, config::cameraSpeed * config::dt);
-        }
 
-        Environment.update(window);
+        Input::update(window, view, environment);
+
+
+        environment.update(window);
 
         /* VIEW THINGS */
         window.clear();
         window.setView(view);
 
         // DRAW HEARE
-        Environment.draw(window);
+        environment.draw(window);
 
         // END DRAW
         window.display();

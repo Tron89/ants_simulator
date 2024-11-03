@@ -9,18 +9,19 @@ std::string title = "Ants!";
 int screenX = 1000;
 int screenY = 1000;
 // 400 ants max for 60 fps (with a bad colision detection)
-// 10000 ants max for 60 fps with a non finished chunk-based colision detection
-int antsNumber = 0;
+// 10000 ants max for 60 fps with a non finished circle chunk-based colision detection
+// 1000 ants max for 60 fps with a SAT colision detection and a non finished chunk-based 
+int antsNumber = 1000;
 int cameraSpeed = 100;
 
 // maybe this can break the world, but meeee
 float timeSpeed = 1.f;
 float dt;
 
-bool passConsole = true;
-bool seeFPS = false;
-bool seeSpawn = false;
-int fpsLimit = 10;
+bool passConsole = false;
+bool seeFPS = true;
+bool seeSpawn = true;
+int fpsLimit = 0;
 
 // Chunks
 float chunkSize = 20.f;
@@ -60,6 +61,5 @@ float pheromoneTimeToDisappear = 30.f;
 
 
 std::vector<sf::Vector2f> test;
-std::vector<sf::Vector2f> test2;
 
 }
