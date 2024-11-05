@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <chrono>
+#include <array>
 
 #include "config.hpp"
 #include "math/Vectors.hpp"
