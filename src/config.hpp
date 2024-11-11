@@ -11,7 +11,7 @@ int screenY = 1000;
 // 400 ants max for 60 fps (with a bad colision detection)
 // 10000 ants max for 60 fps with a non finished circle chunk-based colision detection
 // 1000 ants max for 60 fps with a SAT colision detection and a non finished chunk-based 
-int antsNumber = 1000;
+int antsNumber = 0;
 int cameraSpeed = 100;
 
 // maybe this can break the world, but meeee

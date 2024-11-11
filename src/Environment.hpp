@@ -14,6 +14,18 @@
 #include "Pheromone.hpp"
 #include "Chunk.hpp"
 
+
+#include "Entity.hpp"
+
+#include "components/Component.hpp"
+#include "components/CircleShape.hpp"
+#include "components/Movement.hpp"
+#include "components/Position.hpp"
+
+#include "systems/System.hpp"
+#include "systems/Gravity.hpp"
+#include "systems/Draw.hpp"
+
 #pragma once
 
 
@@ -23,8 +35,16 @@ public:
     bool leftButtonPressed;
     std::string thingToSpawn;
 
+    std::vector<Entity*> entities;
+
     Environment()
     {
+
+        Entity* ant1 = new Entity();
+        ant1->AddComponent<PositionComponent>();
+        ant1->AddComponent<CircleShapeComponent>();
+
+        entities.push_back(ant1);
         // this->all.push_back(&ants);
 
         // spawn ants in random places
@@ -82,31 +102,31 @@ public:
         }
 
     
-    for (size_t y = 0; y < chunks.size(); y++)
-    {
-        for (size_t x = 0; x < chunks[y].size(); x++)
+        for (size_t y = 0; y < chunks.size(); y++)
         {
-            for (size_t objectAnum = 0; objectAnum < chunks[y][x].content.size(); objectAnum++)
+            for (size_t x = 0; x < chunks[y].size(); x++)
             {
-                for (size_t objectBnum = 0; objectBnum < chunks[y][x].content.size(); objectBnum++)
+                for (size_t objectAnum = 0; objectAnum < chunks[y][x].content.size(); objectAnum++)
                 {
-                    sf::Shape* objectA = chunks[y][x].content[objectAnum];
-                    sf::Shape* objectB = chunks[y][x].content[objectBnum];
-                    if (objectAnum == objectBnum){
-                        continue;
-                    } else if(Collisions::SATcollision(*objectA, *objectB)){
+                    for (size_t objectBnum = 0; objectBnum < chunks[y][x].content.size(); objectBnum++)
+                    {
+                        sf::Shape* objectA = chunks[y][x].content[objectAnum];
+                        sf::Shape* objectB = chunks[y][x].content[objectBnum];
+                        if (objectAnum == objectBnum){
+                            continue;
+                        } else if(Collisions::SATcollision(*objectA, *objectB)){
 
-                        // TODO: Change to a proper collision handeler
-                        if (Ant* antA = dynamic_cast<Ant*>(objectA); Ant* antB = dynamic_cast<Ant*>(objectB)){
-                            AntCollider::onCollisionEnter(antA, antB);
-                            AntCollider::onCollisionEnter(antB, antA);
+                            // TODO: Change to a proper collision handeler
+                            if (Ant* antA = dynamic_cast<Ant*>(objectA); Ant* antB = dynamic_cast<Ant*>(objectB)){
+                                AntCollider::onCollisionEnter(antA, antB);
+                                AntCollider::onCollisionEnter(antB, antA);
+                            }
+                            
                         }
-                        
                     }
                 }
             }
         }
-    }
     
 
 
@@ -126,10 +146,24 @@ public:
             pheromone->update();
         }
 
+
+
+
+        Gravity gravitySystem;
+
+
+        gravitySystem.Update(entities, config::dt);
+        
+
+
     }
 
     void draw(sf::RenderWindow &window)
     {
+
+        Draw drawSystem;
+        drawSystem.Update(entities, window);
+
         // chunks
         for (auto &line : chunks){
             for (auto &chunk : line){
