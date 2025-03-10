@@ -18,13 +18,14 @@
 #include "Entity.hpp"
 
 #include "components/Component.hpp"
-#include "components/CircleShape.hpp"
-#include "components/Movement.hpp"
-#include "components/Position.hpp"
+#include "components/Shape.hpp"
+#include "components/PhysicBody.hpp"
+#include "components/Transform.hpp"
 
 #include "systems/System.hpp"
-#include "systems/Gravity.hpp"
 #include "systems/Draw.hpp"
+#include "systems/Movement.hpp"
+#include "systems/Collision.hpp"
 
 #pragma once
 
@@ -39,14 +40,6 @@ public:
 
     Environment()
     {
-
-        Entity* ant1 = new Entity();
-        ant1->AddComponent<PositionComponent>();
-        ant1->AddComponent<CircleShapeComponent>();
-
-        entities.push_back(ant1);
-        // this->all.push_back(&ants);
-
         // spawn ants in random places
         std::mt19937 generator;
         auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
@@ -87,6 +80,7 @@ public:
         generator.seed(seed);
         std::uniform_real_distribution<float> distribution(-1, 1);
 
+/*
         // what is going to do every ant
         for (auto &ant : ants)
         {
@@ -127,7 +121,7 @@ public:
                 }
             }
         }
-    
+    */
 
 
         pheromones.erase(std::remove_if(pheromones.begin(), pheromones.end(),
@@ -147,13 +141,13 @@ public:
         }
 
 
+        Movement movementSystem;
+        Collision collisionSystem;
+        Draw drawSystem;
 
-
-        Gravity gravitySystem;
-
-
-        gravitySystem.Update(entities, config::dt);
-        
+        movementSystem.Update(entities, config::dt);
+        collisionSystem.Update(entities, chunks);
+        drawSystem.Update(entities, window);        
 
 
     }

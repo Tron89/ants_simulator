@@ -4,6 +4,10 @@
 #include "Environment.hpp"
 #include "config.hpp"
 
+#include "components/Shape.hpp"
+#include "components/PhysicBody.hpp"
+#include "components/Transform.hpp"
+
 class Input{
 public:
 
@@ -46,10 +50,12 @@ public:
 
             if (enviroment.thingToSpawn == "ant")
             {
-                for (size_t i = 0; i < config::antCreationNumber; i++)
-                {
-                    enviroment.ants.push_back(new Ant(enviroment.pheromones, worldPos.x, worldPos.y));
-                }
+                Entity* ant1 = new Entity();
+                ant1->AddComponent<TransformComponent>(worldPos.x, worldPos.y);
+                ant1->AddComponent<PhysicBodyComponent>();
+                ant1->AddComponent<ShapeComponent>();
+
+                enviroment.entities.push_back(ant1);
             }
             else if (enviroment.thingToSpawn == "rock")
             {

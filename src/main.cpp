@@ -6,6 +6,8 @@
 #include "config.hpp"
 #include "Input.hpp"
 
+// TODO: Maybe replace the ECS to a more modern one like entt or a CBA one like unity
+
 int main()
 {
 

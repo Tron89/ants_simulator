@@ -24,7 +24,7 @@ bool seeSpawn = true;
 int fpsLimit = 0;
 
 // Chunks
-float chunkSize = 20.f;
+float chunkSize = 200.f;
 sf::Color chunkOutlineColor(194, 197, 204, 50);
 
 // ant
